@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: de.gothaer.gui.presenter.Euro2DollarPresenterImplTest$updateRechnenActionState
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.155 s - in de.gothaer.gui.presenter.Euro2DollarPresenterImplTest$updateRechnenActionState
