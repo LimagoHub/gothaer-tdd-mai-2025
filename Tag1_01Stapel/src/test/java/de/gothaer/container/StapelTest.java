@@ -52,6 +52,17 @@ class StapelTest {
         assertEquals("Overflow",ex.getMessage());
     }
 
+
+    @Test
+    void isFull_NotFullStack_returnsFalse() {
+        assertFalse(objectUnderTest.isFull());
+    }
+    @Test
+    void isFull_FullStack_returnsTrue() {
+        fillUpToLimit();
+        assertTrue(objectUnderTest.isFull());
+    }
+
     private void fillUpToLimit() {
         for (int i = 0; i < 10; i++) {
             assertDoesNotThrow(()->objectUnderTest.push(new Object()));
