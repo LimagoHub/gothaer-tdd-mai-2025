@@ -2,6 +2,7 @@ package de.gothaer.service.impl;
 
 import de.gothaer.persistence.Person;
 import de.gothaer.persistence.PersonenRepository;
+import de.gothaer.service.BlacklistService;
 import de.gothaer.service.PersonenService;
 import de.gothaer.service.PersonenServiceException;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,10 @@ class PersonenServiceImplTest {
 
     @Mock
     private PersonenRepository repoMock;
+
+    @Mock
+    private BlacklistService blacklistServiceMock ;
+
 
     private final Person validPerson = Person.builder().id("1234").vorname("John").nachname("Doe").build();
 
@@ -66,7 +71,8 @@ class PersonenServiceImplTest {
 
     @Test
     void speichern_UnerwuenschtePerson_throwsPersonenServiceException() {
-        Person invalidPerson = Person.builder().id("1234").vorname("Attila").nachname("der Hunne").build();
+        Person invalidPerson = Person.builder().id("1234").vorname("John").nachname("der Hunne").build();
+        when(blacklistServiceMock.isBlacklisted(invalidPerson)).thenReturn(true);
         PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
         assertEquals("Unerwuenschte Person",ex.getMessage());
         verify(repoMock, never()).save(any(Person.class));
@@ -83,7 +89,7 @@ class PersonenServiceImplTest {
 
     @Test
     void speichern_Happyday_personPassedToRepoAndNoExceptionIsThrown() {
-
+        when(blacklistServiceMock.isBlacklisted(validPerson)).thenReturn(false);
         assertDoesNotThrow(()->objectUnderTest.speichern(validPerson));
         verify(repoMock).save(validPerson);
     }

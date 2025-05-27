@@ -2,6 +2,7 @@ package de.gothaer.service.impl;
 
 import de.gothaer.persistence.Person;
 import de.gothaer.persistence.PersonenRepository;
+import de.gothaer.service.BlacklistService;
 import de.gothaer.service.PersonenService;
 import de.gothaer.service.PersonenServiceException;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ public class PersonenServiceImpl implements PersonenService {
 
 
     private final PersonenRepository personenRepository;
-
+    private final BlacklistService blacklistService;
 
     /*
        1.) wenn person = null => PSE
@@ -40,7 +41,7 @@ public class PersonenServiceImpl implements PersonenService {
         if(person.getNachname() == null || person.getNachname().length() < 2)
             throw new PersonenServiceException("Nachname zu kurz");
 
-        if(person.getVorname().equals("Attila"))
+        if(blacklistService.isBlacklisted(person))
             throw new PersonenServiceException("Unerwuenschte Person");
 
 
