@@ -7,6 +7,7 @@ import de.gothaer.service.PersonenService;
 import de.gothaer.service.PersonenServiceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -89,9 +90,11 @@ class PersonenServiceImplTest {
 
     @Test
     void speichern_Happyday_personPassedToRepoAndNoExceptionIsThrown() {
+        InOrder inOrder = inOrder(blacklistServiceMock, repoMock);
         when(blacklistServiceMock.isBlacklisted(validPerson)).thenReturn(false);
         assertDoesNotThrow(()->objectUnderTest.speichern(validPerson));
-        verify(repoMock).save(validPerson);
+        inOrder.verify(blacklistServiceMock).isBlacklisted(validPerson);
+        inOrder.verify(repoMock).save(validPerson);
     }
 
 }
