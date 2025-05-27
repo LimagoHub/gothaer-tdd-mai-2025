@@ -9,6 +9,8 @@ import java.util.Objects;
 @Data
 public class Schwein {
 
+
+    public static final int DEFAULT_WEIGHT = 10;
     private String name;
     @Setter(AccessLevel.PRIVATE)
     private int gewicht;
@@ -20,11 +22,11 @@ public class Schwein {
 
     public Schwein(final String name) {
         setName(name);
-        this.gewicht = 10;
+        this.gewicht = DEFAULT_WEIGHT;
     }
 
     public final void setName(final String name) {
-        if(name.equalsIgnoreCase("elsa")) throw new IllegalArgumentException("Elsa ist nicht erlaubt");
+        if(name == null || name.equalsIgnoreCase("elsa")) throw new IllegalArgumentException("Unerlaubter Name");
         this.name = name;
     }
 
