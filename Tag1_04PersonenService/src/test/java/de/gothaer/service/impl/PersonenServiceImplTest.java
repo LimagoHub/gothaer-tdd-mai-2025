@@ -29,7 +29,7 @@ class PersonenServiceImplTest {
     void speichern_ParameterIsNull_throwsPersonenServiceException() {
         PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(null));
         assertEquals("Parameter darf nicht null sein",ex.getMessage());
-
+        verify(repoMock, never()).save(any(Person.class));
     }
 
     @Test
@@ -37,7 +37,7 @@ class PersonenServiceImplTest {
         Person invalidPerson = Person.builder().id("1234").vorname(null).nachname("Doe").build();
         PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
         assertEquals("Vorname zu kurz",ex.getMessage());
-
+        verify(repoMock, never()).save(any(Person.class));
     }
 
     @Test
@@ -45,7 +45,7 @@ class PersonenServiceImplTest {
         Person invalidPerson = Person.builder().id("1234").vorname("J").nachname("Doe").build();
         PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
         assertEquals("Vorname zu kurz",ex.getMessage());
-
+        verify(repoMock, never()).save(any(Person.class));
     }
 
     @Test
@@ -53,7 +53,7 @@ class PersonenServiceImplTest {
         Person invalidPerson = Person.builder().id("1234").vorname("John").nachname(null).build();
         PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
         assertEquals("Nachname zu kurz",ex.getMessage());
-
+        verify(repoMock, never()).save(any(Person.class));
     }
 
     @Test
@@ -61,7 +61,7 @@ class PersonenServiceImplTest {
         Person invalidPerson = Person.builder().id("1234").vorname("John").nachname("D").build();
         PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
         assertEquals("Nachname zu kurz",ex.getMessage());
-
+        verify(repoMock, never()).save(any(Person.class));
     }
 
     @Test
@@ -69,15 +69,23 @@ class PersonenServiceImplTest {
         Person invalidPerson = Person.builder().id("1234").vorname("Attila").nachname("der Hunne").build();
         PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
         assertEquals("Unerwuenschte Person",ex.getMessage());
-
+        verify(repoMock, never()).save(any(Person.class));
     }
+
     @Test
     void speichern_UnexpectedRuntimeExceptionInUnderlyingService_throwsPersonenServiceException() {
 
         doThrow(ArrayIndexOutOfBoundsException.class).when(repoMock).save(any(Person.class));
-        PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(validPerson));
-        assertEquals("Es ist ein Fehler aufgetreten",ex.getMessage());
-        assertInstanceOf(ArrayIndexOutOfBoundsException.class,ex.getCause());
+        PersonenServiceException ex = assertThrows(PersonenServiceException.class, () -> objectUnderTest.speichern(validPerson));
+        assertEquals("Es ist ein Fehler aufgetreten", ex.getMessage());
+        assertInstanceOf(ArrayIndexOutOfBoundsException.class, ex.getCause());
+    }
+
+    @Test
+    void speichern_Happyday_personPassedToRepoAndNoExceptionIsThrown() {
+
+        assertDoesNotThrow(()->objectUnderTest.speichern(validPerson));
+        verify(repoMock).save(validPerson);
     }
 
 }

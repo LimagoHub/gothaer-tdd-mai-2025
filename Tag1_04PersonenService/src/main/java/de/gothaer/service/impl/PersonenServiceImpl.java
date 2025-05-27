@@ -32,6 +32,7 @@ public class PersonenServiceImpl implements PersonenService {
     }
 
     private void speichernImpl(final Person person) throws PersonenServiceException {
+
         if(person == null)
             throw new PersonenServiceException("Parameter darf nicht null sein");
         if(person.getVorname() == null || person.getVorname().length() < 2)
@@ -43,6 +44,6 @@ public class PersonenServiceImpl implements PersonenService {
             throw new PersonenServiceException("Unerwuenschte Person");
 
 
-        personenRepository.save(Person.builder().build());
+        personenRepository.save(person);
     }
 }
