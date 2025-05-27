@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PersonenServiceImplTest {
@@ -20,6 +22,8 @@ class PersonenServiceImplTest {
 
     @Mock
     private PersonenRepository repoMock;
+
+    private final Person validPerson = Person.builder().id("1234").vorname("John").nachname("Doe").build();
 
     @Test
     void speichern_ParameterIsNull_throwsPersonenServiceException() {
@@ -44,5 +48,36 @@ class PersonenServiceImplTest {
 
     }
 
+    @Test
+    void speichern_NachnameIsNull_throwsPersonenServiceException() {
+        Person invalidPerson = Person.builder().id("1234").vorname("John").nachname(null).build();
+        PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
+        assertEquals("Nachname zu kurz",ex.getMessage());
+
+    }
+
+    @Test
+    void speichern_NachnameToShort_throwsPersonenServiceException() {
+        Person invalidPerson = Person.builder().id("1234").vorname("John").nachname("D").build();
+        PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
+        assertEquals("Nachname zu kurz",ex.getMessage());
+
+    }
+
+    @Test
+    void speichern_UnerwuenschtePerson_throwsPersonenServiceException() {
+        Person invalidPerson = Person.builder().id("1234").vorname("Attila").nachname("der Hunne").build();
+        PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(invalidPerson));
+        assertEquals("Unerwuenschte Person",ex.getMessage());
+
+    }
+    @Test
+    void speichern_UnexpectedRuntimeExceptionInUnderlyingService_throwsPersonenServiceException() {
+
+        doThrow(ArrayIndexOutOfBoundsException.class).when(repoMock).save(any(Person.class));
+        PersonenServiceException ex = assertThrows(PersonenServiceException.class,()->objectUnderTest.speichern(validPerson));
+        assertEquals("Es ist ein Fehler aufgetreten",ex.getMessage());
+        assertInstanceOf(ArrayIndexOutOfBoundsException.class,ex.getCause());
+    }
 
 }

@@ -24,8 +24,25 @@ public class PersonenServiceImpl implements PersonenService {
     */
     @Override
     public void speichern(final Person person) throws PersonenServiceException {
+        try {
+            speichernImpl(person);
+        } catch (RuntimeException e) {
+            throw new PersonenServiceException("Es ist ein Fehler aufgetreten",e);
+        }
+    }
+
+    private void speichernImpl(final Person person) throws PersonenServiceException {
         if(person == null)
             throw new PersonenServiceException("Parameter darf nicht null sein");
-        throw new PersonenServiceException("Vorname zu kurz");
+        if(person.getVorname() == null || person.getVorname().length() < 2)
+            throw new PersonenServiceException("Vorname zu kurz");
+        if(person.getNachname() == null || person.getNachname().length() < 2)
+            throw new PersonenServiceException("Nachname zu kurz");
+
+        if(person.getVorname().equals("Attila"))
+            throw new PersonenServiceException("Unerwuenschte Person");
+
+
+        personenRepository.save(Person.builder().build());
     }
 }
