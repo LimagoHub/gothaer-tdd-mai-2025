@@ -2,16 +2,20 @@ package de.gothaer.model;
 
 public class Euro2DollarRechnerImpl implements Euro2DollarRechner {
 	
-	
+	private final ExchanceService exchangeservice;
+
+	public Euro2DollarRechnerImpl(final ExchanceService exchangeservice) {
+		this.exchangeservice = exchangeservice;
+	}
+
 	/* (non-Javadoc)
 	 * @see de.model.IEuro2DollarRechner#calculateEuro2Dollar(de.model.Euro2DollarForm)
 	 */
 	@Override
 	public double calculateEuro2Dollar(double euro) {
-		// zukünftig potentiell RuntimeException möglich
 
-		//double wechselkurs = exchangeservice.getrate("USD");
-		return euro * 1.1;
+		double wechselkurs = exchangeservice.getRate("USD");
+		return euro * wechselkurs;
 	}
 
 }

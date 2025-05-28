@@ -1,4 +1,2 @@
 org\example\AppTest.class
 de\gothaer\gui\presenter\Euro2DollarPresenterImplTest.class
-de\gothaer\gui\presenter\Euro2DollarPresenterImplTest$onRechnen.class
-de\gothaer\gui\presenter\Euro2DollarPresenterImplTest$updateRechnenActionState.class

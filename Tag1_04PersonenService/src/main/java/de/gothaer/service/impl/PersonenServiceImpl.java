@@ -7,6 +7,8 @@ import de.gothaer.service.PersonenService;
 import de.gothaer.service.PersonenServiceException;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 public class PersonenServiceImpl implements PersonenService {
 
@@ -24,7 +26,7 @@ public class PersonenServiceImpl implements PersonenService {
        Happy day => person via repo speichern
     */
     @Override
-    public void speichern(final Person person) throws PersonenServiceException {
+    public void speichern(Person person) throws PersonenServiceException {
         try {
             speichernImpl(person);
         } catch (RuntimeException e) {
@@ -32,7 +34,7 @@ public class PersonenServiceImpl implements PersonenService {
         }
     }
 
-    private void speichernImpl(final Person person) throws PersonenServiceException {
+    private void speichernImpl(Person person) throws PersonenServiceException {
 
         if(person == null)
             throw new PersonenServiceException("Parameter darf nicht null sein");
@@ -44,6 +46,7 @@ public class PersonenServiceImpl implements PersonenService {
         if(blacklistService.isBlacklisted(person))
             throw new PersonenServiceException("Unerwuenschte Person");
 
+        person.setId(UUID.randomUUID().toString());
 
         personenRepository.save(person);
     }

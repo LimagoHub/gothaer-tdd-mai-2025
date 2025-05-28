@@ -7,12 +7,15 @@ import de.gothaer.gui.presenter.Euro2DollarPresenterImpl;
 import de.gothaer.gui.presenter.Euro2DollarPresenter;
 import de.gothaer.model.Euro2DollarRechnerImpl;
 import de.gothaer.model.Euro2DollarRechner;
+import de.gothaer.model.ExchanceService;
+import de.gothaer.model.ExchanceServiceImpl;
 
 public class Main {
 
 
 	public static void main(String[] args) {
-		Euro2DollarRechner model = new Euro2DollarRechnerImpl();
+		ExchanceService exchangeservice = new ExchanceServiceImpl();
+		Euro2DollarRechner model = new Euro2DollarRechnerImpl(exchangeservice);
 		
 		Euro2DollarPresenter presenter = new Euro2DollarPresenterImpl();
 		
