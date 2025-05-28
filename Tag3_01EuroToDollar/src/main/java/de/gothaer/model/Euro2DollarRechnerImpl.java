@@ -14,8 +14,12 @@ public class Euro2DollarRechnerImpl implements Euro2DollarRechner {
 	@Override
 	public double calculateEuro2Dollar(double euro) {
 
-		double wechselkurs = exchangeservice.getRate("USD");
-		return euro * wechselkurs;
-	}
+        try {
+            double wechselkurs = exchangeservice.getRate("USD");
+            return euro * wechselkurs;
+        } catch (RuntimeException e) {
+            throw new ExchangeServiceException("Wechselkurs konnte nicht ermittelt werden.", e);
+        }
+    }
 
 }
